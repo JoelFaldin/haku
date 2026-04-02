@@ -20,11 +20,33 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							":NODE",
+							":PACKAGE:",
+							":BLANK_LINE:",
+							"!:ALIAS:",
+							":PATH:"
+						]
+					}
+				}
+			}
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"a11y": {
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"useKeyWithClickEvents": "off"
+			}
 		}
 	},
 	"javascript": {
@@ -33,4 +55,3 @@
 		}
 	}
 }
-
