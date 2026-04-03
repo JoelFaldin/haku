@@ -1,6 +1,7 @@
+import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
-import { type ChangeEvent, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import CameraIcon from "#/components/Icons/CameraIcon";
 import SendIcon from "#/components/Icons/SendIcon";
@@ -11,27 +12,21 @@ export const Route = createFileRoute("/form")({
 });
 
 function RouteComponent() {
+	const form = useForm({
+		defaultValues: {
+			fullName: "",
+			phoneNumber: "",
+			firstTime: "",
+			plate: "",
+			image: null as File | null,
+		},
+		onSubmit: async ({ value }) => {
+			console.log(value);
+		},
+	});
+
 	const [picture, setPicture] = useState<string | null>();
 	const pictureRef = useRef<HTMLInputElement>(null);
-
-	const removePicture = () => {
-		setPicture(null);
-	};
-
-	const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = () => {
-				setPicture(reader.result as string);
-			};
-
-			reader.readAsDataURL(file);
-		}
-	};
-
-	const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {};
 
 	return (
 		<section className="bg-base text-primary h-full flex justify-center items-center">
@@ -46,121 +41,178 @@ function RouteComponent() {
 					</p>
 				</span>
 
-				<form className="flex flex-col gap-4 items-center">
-					<label htmlFor="nombre" className="flex flex-col w-xs">
-						<span className="text-sm">
-							Nombre completo<span className="text-red-400">*</span>:
-						</span>
-						<input
-							id="nombre"
-							type="text"
-							required
-							className="border-0 focus-visible:ring-1 p-1 shadow-md text-sm"
-							placeholder="Ingresa tu nombre"
-						/>
-					</label>
-
-					<label htmlFor="phone" className="flex flex-col gap-2 w-xs">
-						<span className="w-full text-sm">
-							Número de teléfono<span className="text-red-400">*</span>:
-							<input
-								id="phone"
-								type="text"
-								className="w-full border-0 focus-visible:ring-1 p-1 bg-surface shadow-md"
-								placeholder="Ingresa tu número de teléfono"
-							/>
-						</span>
-
-						<span className="max-w-xs text-xs">
-							Sólo usaremos tu número para enviarte un mensaje en caso de
-							necesitar mover tu vehículo.
-						</span>
-					</label>
-
-					<div className="w-xs text-sm">
-						<span>
-							¿Es tu primera vez por aquí?
-							<span className="text-red-400">*</span>
-						</span>
-						<div className="flex flex-row gap-2">
-							<label htmlFor="cbox1" className="flex flex-row gap-2">
-								<span>Sí</span>
-								<input
-									type="radio"
-									name="first?time"
-									id="cbox1"
-									value="first_checkbox"
-								/>
-							</label>
-							<label htmlFor="cbox2" className="flex flex-row gap-2">
-								<span>No</span>
-								<input
-									type="radio"
-									name="first?time"
-									id="cbox2"
-									value="second_checkbox"
-								/>
-							</label>
-						</div>
-					</div>
-
-					<label htmlFor="plate" className="flex flex-col w-xs">
-						<span className="text-sm">
-							Indica la patente de tu vehículo
-							<span className="text-red-400">*</span>:
-						</span>
-						<input
-							id="plate"
-							type="text"
-							className="w-full border-0 focus-visible:ring-1 p-1 bg-surface shadow-md"
-							placeholder="AA-BB-11"
-						/>
-					</label>
-
-					<div className="w-full">
-						<label htmlFor="image" className="text-primary text-sm">
-							Imagen <span>(opcional)</span>:
-						</label>
-						{picture ? (
-							<div className="relative w-32 h-32 mx-auto">
-								<Image
-									src={picture}
-									alt="Preview de la fotografía"
-									className="object-cover rounded-xl"
-									layout="fullWidth"
-								/>
-								<button
-									type="button"
-									onClick={removePicture}
-									className="absolute -top-2 -right-2 p-1 rounded-full shadow-md bg-surface-strong"
-								>
-									<XIcon width={16} height={16} />
-								</button>
-							</div>
-						) : (
-							<div
-								onClick={() => pictureRef.current?.click()}
-								className="flex flex-col items-center justify-center gap-2 p-6 rounded-xl cursor-pointer transition-all hover:opacity-80 bg-surface border border-border-line border-dashed"
-							>
-								<div className="p-3 rounded-full">
-									<CameraIcon />
-								</div>
-								<span className="text-sm">Añade una fotografía</span>
+				<form
+					className="flex flex-col gap-4 items-center"
+					onSubmit={(event) => {
+						event.preventDefault();
+						event.stopPropagation();
+					}}
+				>
+					<form.Field
+						name="fullName"
+						children={(field) => (
+							<div className="flex flex-col w-xs">
+								<span className="text-sm">
+									Nombre completo<span className="text-red-400">*</span>:
+								</span>
 
 								<input
-									ref={pictureRef}
-									type="file"
-									accept="image/**"
-									onChange={handleFileChange}
-									hidden
+									type="text"
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(event) => field.handleChange(event.target.value)}
+									required
+									className="border-0 focus-visible:ring-1 p-1 shadow-md text-sm"
+									placeholder="Ingresa tu nombre"
 								/>
 							</div>
 						)}
-					</div>
+					/>
+
+					<form.Field
+						name="phoneNumber"
+						children={(field) => (
+							<div className="flex flex-col gap-2 w-xs">
+								<div className="flex flex-col w-full text-sm">
+									<span>
+										Número de teléfono<span className="text-red-400">*</span>:
+									</span>
+									<input
+										type="text"
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(event) => field.handleChange(event.target.value)}
+										required
+										className="border-0 focus-visible:ring-1 p-1 shadow-md text-sm"
+										placeholder="Ingresa tu número de teléfono"
+									/>
+								</div>
+
+								<span className="max-w-xs text-xs">
+									Sólo usaremos tu número para enviarte un mensaje en caso de
+									necesitar mover tu vehículo.
+								</span>
+							</div>
+						)}
+					/>
+
+					<form.Field
+						name="firstTime"
+						children={(field) => (
+							<div className="w-xs text-sm">
+								<span>
+									¿Es tu primera vez por aquí?
+									<span className="text-red-400">*</span>
+								</span>
+								<div className="flex flex-row gap-2">
+									<label htmlFor="cbox1" className="flex flex-row gap-2">
+										<span>Sí</span>
+										<input
+											type="radio"
+											name="first?time"
+											checked={field.state.value === "Sí"}
+											onChange={() => field.handleChange("Sí")}
+											onBlur={field.handleBlur}
+										/>
+									</label>
+									<label htmlFor="cbox2" className="flex flex-row gap-2">
+										<span>No</span>
+										<input
+											type="radio"
+											name="first?time"
+											checked={field.state.value === "No"}
+											onChange={() => field.handleChange("No")}
+											onBlur={field.handleBlur}
+										/>
+									</label>
+								</div>
+							</div>
+						)}
+					/>
+
+					<form.Field
+						name="plate"
+						children={(field) => (
+							<div className="flex flex-col w-xs">
+								<span className="text-sm">
+									Indica la patente de tu vehículo
+									<span className="text-red-400">*</span>:
+								</span>
+								<input
+									type="text"
+									className="w-full border-0 focus-visible:ring-1 p-1 bg-surface shadow-md"
+									placeholder="AA-BB-11"
+									value={field.state.value}
+									onChange={(event) => field.handleChange(event.target.value)}
+									onBlur={field.handleBlur}
+								/>
+							</div>
+						)}
+					/>
+
+					<form.Field
+						name="image"
+						children={(field) => (
+							<div className="w-full">
+								<label htmlFor="image" className="text-primary text-sm">
+									Imagen <span>(opcional)</span>:
+								</label>
+								{picture ? (
+									<div className="relative w-32 h-32 mx-auto">
+										<Image
+											src={picture}
+											alt="Preview de la fotografía"
+											className="object-cover rounded-xl"
+											layout="fullWidth"
+										/>
+										<button
+											type="button"
+											onClick={() => {
+												field.handleBlur();
+												setPicture(null);
+											}}
+											className="absolute -top-2 -right-2 p-1 rounded-full shadow-md bg-surface-strong"
+										>
+											<XIcon width={16} height={16} />
+										</button>
+									</div>
+								) : (
+									<div
+										onClick={() => pictureRef.current?.click()}
+										className="flex flex-col items-center justify-center gap-2 p-6 rounded-xl cursor-pointer transition-all hover:opacity-80 bg-surface border border-border-line border-dashed"
+									>
+										<div className="p-3 rounded-full">
+											<CameraIcon />
+										</div>
+										<span className="text-sm">Añade una fotografía</span>
+
+										<input
+											ref={pictureRef}
+											type="file"
+											accept="image/**"
+											onChange={(event) => {
+												const file = event.target.files?.[0] || null;
+												if (file) {
+													field.handleChange(file);
+
+													const reader = new FileReader();
+													reader.onload = () => {
+														setPicture(reader.result as string);
+													};
+													reader.readAsDataURL(file);
+												}
+											}}
+											hidden
+										/>
+									</div>
+								)}
+							</div>
+						)}
+					/>
 
 					<button
-						type="button"
-						onClick={handleSubmit}
+						type="submit"
+						onClick={() => form.handleSubmit()}
 						className="w-full p-2 cursor-pointer flex flex-row justify-center items-center gap-2 bg-lagoon/80"
 					>
 						<SendIcon width={16} height={16} />
