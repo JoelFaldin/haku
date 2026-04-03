@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import CameraIcon from "#/components/Icons/CameraIcon";
 import SendIcon from "#/components/Icons/SendIcon";
 import XIcon from "#/components/Icons/XIcon";
+import { submitForm } from "#/utils/form.functions";
 
 export const Route = createFileRoute("/form")({
 	component: RouteComponent,
@@ -21,7 +22,16 @@ function RouteComponent() {
 			image: null as File | null,
 		},
 		onSubmit: async ({ value }) => {
-			console.log(value);
+			const submitObject = {
+				data: {
+					fullName: value.fullName,
+					phoneNumber: value.phoneNumber,
+					firstTime: value.firstTime,
+					plate: value.plate,
+				},
+			};
+
+			await submitForm(submitObject);
 		},
 	});
 

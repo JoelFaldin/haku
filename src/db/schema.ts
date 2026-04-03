@@ -1,11 +1,14 @@
 import { sql } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const todos = sqliteTable("todos", {
-	id: integer({ mode: "number" }).primaryKey({
+export const usersTable = sqliteTable("users", {
+	id: integer("id").primaryKey({
 		autoIncrement: true,
 	}),
-	title: text().notNull(),
+	fullName: text().notNull(),
+	phoneNumber: text().notNull(),
+	firstTime: text().notNull(),
+	plate: text().notNull(),
 	createdAt: integer("created_at", { mode: "timestamp" }).default(
 		sql`(unixepoch())`,
 	),
