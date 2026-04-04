@@ -9,6 +9,8 @@ export const usersTable = sqliteTable("users", {
 	phoneNumber: text().notNull(),
 	firstTime: text().notNull(),
 	plate: text().notNull(),
+	carBrand: text().notNull(),
+	carModel: text().notNull(),
 	createdAt: integer("created_at", { mode: "timestamp" }).default(
 		sql`(unixepoch())`,
 	),

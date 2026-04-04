@@ -8,6 +8,8 @@ const submitFormSchema = z.object({
 	phoneNumber: z.string().min(6),
 	firstTime: z.string().min(2).max(2),
 	plate: z.string().min(8).max(8),
+	carBrand: z.string().min(2),
+	carModel: z.string().min(2),
 });
 
 export const submitForm = createServerFn({ method: "POST" })

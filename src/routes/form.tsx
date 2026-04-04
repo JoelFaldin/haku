@@ -19,6 +19,8 @@ function RouteComponent() {
 			phoneNumber: "",
 			firstTime: "",
 			plate: "",
+			carBrand: "",
+			carModel: "",
 			image: null as File | null,
 		},
 		onSubmit: async ({ value }) => {
@@ -28,6 +30,8 @@ function RouteComponent() {
 					phoneNumber: value.phoneNumber,
 					firstTime: value.firstTime,
 					plate: value.plate,
+					carBrand: value.carBrand,
+					carModel: value.carModel,
 				},
 			};
 
@@ -152,6 +156,46 @@ function RouteComponent() {
 									type="text"
 									className="w-full border-0 focus-visible:ring-1 p-1 bg-surface shadow-md"
 									placeholder="AA-BB-11"
+									value={field.state.value}
+									onChange={(event) => field.handleChange(event.target.value)}
+									onBlur={field.handleBlur}
+								/>
+							</div>
+						)}
+					/>
+
+					<form.Field
+						name="carBrand"
+						children={(field) => (
+							<div className="flex flex-col w-xs">
+								<span className="text-sm">
+									Indica la marca de tu vehículo
+									<span className="text-red-400">*</span>:
+								</span>
+								<input
+									type="text"
+									className="w-full border-0 focus-visible:ring-1 p-1 bg-surface shadow-md"
+									placeholder="Mazda"
+									value={field.state.value}
+									onChange={(event) => field.handleChange(event.target.value)}
+									onBlur={field.handleBlur}
+								/>
+							</div>
+						)}
+					/>
+
+					<form.Field
+						name="carModel"
+						children={(field) => (
+							<div className="flex flex-col w-xs">
+								<span className="text-sm">
+									Indica el modelo de tu vehículo
+									<span className="text-red-400">*</span>:
+								</span>
+								<input
+									type="text"
+									className="w-full border-0 focus-visible:ring-1 p-1 bg-surface shadow-md"
+									placeholder="CX-5"
 									value={field.state.value}
 									onChange={(event) => field.handleChange(event.target.value)}
 									onBlur={field.handleBlur}
